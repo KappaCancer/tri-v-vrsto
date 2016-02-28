@@ -42,6 +42,15 @@ kjer je `n` neobveen parameter, ki pove maksimalno globino za minimax.
 
 Vsi razredi so v datoteki `tictactoe.py`, ker gre za zelo preprosto aplikacijo.
 
+#### Razred `Gui`
+
+Razred, v katerem je definiran uporabniški vmesnik. Metode:
+
+* `izbira_igralcev(self)`: nastavi stanje igre v izbiranje igralcev
+* `zacni_igro(self)`: začni igrati igro (glde na izbrane igralce)
+* `povleci_potezo(self, i, j)`: nariši in povleci potezo `(i,j)`
+* `koncaj_igro(self, z)`: končaj igro, pri čemer je `z` rezultat igre, kot ga vrne metoda `zmagovalec` iz razreda `Igra`
+
 #### Razred `Igra`
 
 Objekt tega razreda vsebuje trenutno stanje igre, kakor tudi njeno zgodovino. Ima
