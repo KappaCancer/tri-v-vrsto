@@ -4,4 +4,4 @@
 
 Ta repozitorij služi kot primer, kako implementiramo igrico, za študente pri predmetu [Programiranje 2](https://ucilnica.fmf.uni-lj.si/course/view.php?id=17) za 2. letnik študija matematike an [Fakulteti za matematiko in fiziko](http://www.fmf.uni-lj.si/) Univerze v Ljubljani.
 
-Struktura in delovanje programa je opisana v datoteki `Vsebinski-nacrt.md`.
+Struktura in delovanje programa je opisana v datoteki `vsebinski-nacrt.md`.
