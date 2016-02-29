@@ -36,11 +36,14 @@ class Igra():
         return (self.polje[i][j] is None)
 
     def je_konec(self):
-        for i in range(3):
-            for j in range(3):
-                if self.polje[i][j] is None:
-                    return False
-        return True
+        if self.zmagovalec() is NEODLOCENO:
+            for i in range(3):
+                for j in range(3):
+                    if self.polje[i][j] is None:
+                        return False
+            return True
+        else:
+            return True
 
     def veljavne_poteze(self):
         poteze = []
