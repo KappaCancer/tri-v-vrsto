@@ -56,7 +56,7 @@ Razred, v katerem je definiran uporabniški vmesnik. Metode:
 Objekt tega razreda vsebuje trenutno stanje igre, kakor tudi njeno zgodovino. Ima
 naslednje metode:
 
-* `poteza(self,i,j)`: odigraj potezo na polju `(i,j)`, pri čemer je `i` vrstica (0, 1, 2) in `j` stolpec (0, 1, 2). Če poteza ni veljavna, prekini izvajanje programa. Objekt razreda `Igra` sam ve, kdo je na potezi.
+* `povleci(self,i,j)`: odigraj potezo na polju `(i,j)`, pri čemer je `i` vrstica (0, 1, 2) in `j` stolpec (0, 1, 2). Če poteza ni veljavna, prekini izvajanje programa. Objekt razreda `Igra` sam ve, kdo je na potezi.
 * `razveljavi(self)`: vrni se v stanje pred zadnjo potezo, metodo lahko pokličemo večkrat, s tem se premikamo navzgor po igralnem drevesu.
 * `na_potezi(self)`: Kdo je na potezi? Vrne:
     * `"X"` če je na potezi križec
@@ -74,10 +74,8 @@ naslednje metode:
 Razne vrste igralcev (človek, algoritem minimax, algoritem alfa-beta) predstavimo vsakega
 s svojim razredom. Objekt, ki predstavlja igralca, mora imeti naslednje metode:
 
-* `poteza(self, p, igr)`: metoda vrne potezo, ki naj jo igra igralec `igr` v dani poziciji `p`. Vhodni podatki:
-    * `p`: objekt razreda `Igra`, ki opisuje trenutno stanje igre. Igralec lahko vleče poteze v igri `p`, vendar jih mora tudi razveljaviti, da je ob vrnitvi stanje igre tako, kot ob klicu.
-    * `igr`: kateri igralec je na potezi, možni vrednosti sta `"X"` in `"O"`
-  Izhodni podatki: metoda vrne koordinate `(i,j)` poteze, ali `None`, če ni možna nobena poteza.
+* `__init__(self, gui)`: konstruktorju podamo objekt `gui`, s katerim lahko dostopa do uporabniškega vmesnika in stanja igre
+* `povleci(self)`: metoda povleče potezo v `gui`. To lahko naredi asinhrono.
 
 ##### Razred `Clovek`
 

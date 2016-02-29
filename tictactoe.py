@@ -6,9 +6,78 @@ MINIMAX_PRIVZETA_GLOBINA = 3
 ######################################################################
 ## Igra
 
+IGRALEC_X = "X"
+IGRALEC_O = "O"
+
+NEODLOCENO = None
+
+def nasprotnik(igralec):
+    if igralec == IGRALEC_X:
+        return IGRALEC_O
+    else:
+        return IGRALEC_X
+
 class Igra():
     def __init__(self):
-        pass
+        self.polje = [[None, None, None],
+                      [None, None, None],
+                      [None, None, None]]
+        self.na_potezi = IGRALEC_X
+        self.zgodovina = []
+
+    def shrani_pozicijo(self):
+        p = [self.polje[i][:] for i in range(3)]
+        self.zgodovina.append((p, self.na_potezi))
+
+    def razveljavi(self):
+        (self.polje, self.na_potezi) = self.zgodovina.pop()
+
+    def je_veljavna(self, i, j):
+        return (self.polje[i][j] is None)
+
+    def je_konec(self):
+        for i in range(3):
+            for j in range(3):
+                if self.polje[i][j] is None:
+                    return False
+        return True
+
+    def veljavne_poteze(self):
+        poteze = []
+        for i in range(3):
+            for j in range(3):
+                if self.je_veljavna(i, j):
+                    poteze.append((i,j))
+        return poteze
+
+    def povleci(self, i, j):
+        if self.polje[i][j] is None:
+            self.shrani_pozicijo()
+            self.polje[i][j] = self.na_potezi
+            self.na_potezi = nasprotnik(self.na_potezi)
+
+    def zmagovalec(self):
+        # Tabela vseh trojk, ki nastopajo v igralnem polju
+        trojke = [
+            # Vodoravne
+            [(0,0), (0,1), (0,2)],
+            [(1,0), (1,1), (1,2)],
+            [(2,0), (2,1), (2,2)],
+            # Navpične
+            [(0,0), (1,0), (2,0)],
+            [(0,1), (1,1), (2,1)],
+            [(0,2), (1,2), (2,2)],
+            # Diagonali
+            [(0,0), (1,1), (2,2)],
+            [(0,2), (1,1), (2,0)]]
+        for t in trojke:
+            ((i1,j1),(i2,j2),(i3,j3)) = t
+            p = self.polje[i1][j1]
+            if p != None and self.polje[i1][j1] == self.polje[i2][j2] == self.polje[i3][j3]:
+                # Našli smo zmagovalno trojko
+                return (p, [t[0], t[1], t[2]])
+        # Ni zmagovalca
+        return NEODLOCENO
 
 ######################################################################
 ## Igralec clovek
@@ -17,15 +86,13 @@ class Clovek():
     def __init__(self, gui):
         self.gui = gui
 
-    def poteza(self, igra, igralec):
-        # Potezo povlečemo tako, da čakamo, da bo uporabnik
-        # kliknil na igralno ploščo.
-        self.igralec = igralec
-        self.igra = igra
-        gui.plosca.bind('<Button-1>', self.klik)
+    def igraj(self):
+        self.gui.plosca.bind('<Button-1>', self.klik)
 
     def klik(self, event):
-        pass
+        i = event.x // 100
+        j = event.y // 100
+        self.gui.povleci_potezo(i, j)
 
 ######################################################################
 ## Igralec minimax
@@ -51,28 +118,61 @@ class Gui():
         self.plosca = tkinter.Canvas(master, width=300, height=300)
         self.plosca.grid(row=1, column=0, columnspan=2)
 
-        # Crte na igralnem polju
+        # Črte na igralnem polju
         self.plosca.create_line(100,0,100,300)
         self.plosca.create_line(200,0,200,300)
         self.plosca.create_line(0,100,300,100)
         self.plosca.create_line(0,200,300,200)
 
+        # Seznam grafičnih elementov, ki tvorijo križce in krožce
+        self.figure = []
+
+        # Prični z izbiro igralcev
+        self.izbira_igralcev()
 
     def izbira_igralcev(self):
         """Nastavi stanje igre na izbiranje igralcev."""
-        pass
+        # Zaenkrat kar preskocimo izbiro igralcev in
+        # predpostavimo, da sta oba igralca človeka
+        self.igralec_x = Clovek(self)
+        self.igralec_o = Clovek(self)
+        self.zacni_igro()
 
     def zacni_igro(self):
         """Nastavi stanje igre na zacetek igre."""
-        pass
+        self.igra = Igra()
+        self.igralec_x.igraj()
 
-    def koncaj_igro(self, zmagovalec):
+    def koncaj_igro(self):
         """Nastavi stanje igre na konec igre."""
-        pass
+        print ("KONEC!")
+
+    def narisi_X(self, i, j):
+        x = i * 100
+        y = j * 100
+        self.plosca.create_line(x+5, y+5, x+95, y+95)
+        self.plosca.create_line(x+95, y+5, x+5, y+95)
+
+    def narisi_O(self, i, j):
+        x = i * 100
+        y = j * 100
+        self.plosca.create_oval(x+5, y+5, x+95, y+95)
 
     def povleci_potezo(self, i, j):
         """Povleci potezo (i,j)."""
-        pass
+        if self.igra.je_veljavna(i, j):
+            if self.igra.na_potezi == IGRALEC_X:
+                self.narisi_X(i, j)
+            else:
+                self.narisi_O(i, j)
+            self.igra.povleci(i, j)
+            if self.igra.je_konec():
+                self.koncaj_igro()
+            else:
+                if self.igra.na_potezi == IGRALEC_X:
+                    self.igralec_x.igraj()
+                else:
+                    self.igralec_o.igraj()
 
 
 ######################################################################
