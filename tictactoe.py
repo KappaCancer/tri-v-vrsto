@@ -1,5 +1,8 @@
 import tkinter
 
+# Privzeta minimax globina, če je nismo podali ob zagonu v ukazni vrstici
+MINIMAX_PRIVZETA_GLOBINA = 3 
+
 ######################################################################
 ## Igra
 
@@ -7,6 +10,33 @@ class Igra():
     def __init__(self):
         pass
 
+######################################################################
+## Igralec clovek
+
+class Clovek():
+    def __init__(self, gui):
+        self.gui = gui
+
+    def poteza(self, igra, igralec):
+        # Potezo povlečemo tako, da čakamo, da bo uporabnik
+        # kliknil na igralno ploščo.
+        self.igralec = igralec
+        self.igra = igra
+        gui.plosca.bind('<Button-1>', self.klik)
+
+    def klik(self, event):
+        pass
+
+######################################################################
+## Igralec minimax
+
+class Minimax():
+    def __init__(self, globina):
+        self.globina = globina
+
+    def poteza(self, igra, igralec):
+        return igra.veljavne_poteze[0]
+        
 ######################################################################
 ## Uporabniški vmesnik
 
@@ -20,7 +50,6 @@ class Gui():
         # Igralno območje
         self.plosca = tkinter.Canvas(master, width=300, height=300)
         self.plosca.grid(row=1, column=0, columnspan=2)
-        self.plosca.bind('<Button-1>', self.klik)
 
         # Crte na igralnem polju
         self.plosca.create_line(100,0,100,300)
@@ -29,10 +58,6 @@ class Gui():
         self.plosca.create_line(0,200,300,200)
 
 
-    def klik(self, event):
-        """Callback za igralno plosčo, kliče se ob kliku na ploščo."""
-        print ("Klik {0}, {1}".format(event.x, event.y))
-        
     def izbira_igralcev(self):
         """Nastavi stanje igre na izbiranje igralcev."""
         pass
